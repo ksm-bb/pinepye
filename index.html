@@ -171,12 +171,12 @@
                             </div>
                             <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 ${Object.values(CHARACTERS).map(char => `
-                                    <div class="bg-[#5c3d28] rounded-[2rem] p-8 text-center shadow-sm hover:shadow-xl transition-all border border-transparent hover:border-[#b1c7db]/40 group">
-                                        <div class="w-16 h-16 mx-auto rounded-full overflow-hidden mb-6 group-hover:scale-110 transition-transform">
+                                    <div class="bg-[#5c3d28] rounded-[2rem] p-4 md:p-8 text-center shadow-sm hover:shadow-xl transition-all border border-transparent hover:border-[#b1c7db]/40 group">
+                                        <div class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full overflow-hidden mb-3 md:mb-6 group-hover:scale-110 transition-transform">
                                             <img src="${char.squadImage}" class="w-full h-full object-cover" alt="${char.name}">
                                         </div>
-                                        <h3 class="font-bold text-lg text-[#b1c7db] mb-2">${char.name}</h3>
-                                        <p class="text-sm text-[#b1c7db]/70 mb-6 line-clamp-3">${char.desc}</p>
+                                        <h3 class="font-bold text-sm md:text-lg text-[#b1c7db] mb-2">${char.name}</h3>
+                                        <p class="text-xs md:text-sm text-[#b1c7db]/70 mb-3 md:mb-6 line-clamp-3">${char.desc}</p>
                                         <div class="inline-block text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full ${char.theme} bg-opacity-20">${char.tag}</div>
                                     </div>
                                 `).join('')}
