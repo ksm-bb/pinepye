@@ -171,8 +171,8 @@
 
                         <section id="mascots" class="bg-[#5c3d28] py-24 rounded-[3rem] mx-4 lg:mx-8 px-6 mb-24">
                             <div class="max-w-7xl mx-auto text-center mb-16">
-                                <h2 class="text-3xl md:text-4xl font-extrabold text-[#432c1c] mb-4">CONY CLUB</h2>
-                                <p class="text-[#432c1c]/80 max-w-2xl mx-auto">ทำความรู้จักแก๊งกระต่ายของเรา แต่ละตัวมีความหมายที่ซ่อนอยู่</p>
+                                <h2 class="text-3xl md:text-4xl font-extrabold text-[#b1c7db] mb-4">CONY CLUB</h2>
+                                <p class="text-[#b1c7db]/80 max-w-2xl mx-auto">ทำความรู้จักแก๊งกระต่ายของเรา แต่ละตัวมีความหมายที่ซ่อนอยู่</p>
                             </div>
                             <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 ${Object.values(CHARACTERS).map(char => `
@@ -181,7 +181,7 @@
                                             <img src="${char.squadImage}" class="w-full h-full object-cover" alt="${char.name}">
                                         </div>
                                         <h3 class="font-bold text-sm md:text-lg text-[#432c1c] mb-2">${char.name}</h3>
-                                        <p class="text-xs md:text-sm text-[#432c1c]/70 mb-3 md:mb-6 line-clamp-3">${char.cardDesc || char.desc}</p>
+                                        <p class="text-xs md:text-sm text-[#432c1c]/80 mb-3 md:mb-6 line-clamp-3">${char.cardDesc || char.desc}</p>
                                         <div class="inline-block text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full ${char.theme} bg-opacity-20">${char.tag}</div>
                                     </div>
                                 `).join('')}
