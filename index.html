@@ -459,54 +459,49 @@
         }
 
         function saveResultCard() {
-            const card = document.getElementById('resultCard');
-            if (!card) return;
+            const res = state.result;
+            if (!res) return;
             const btn = document.querySelector('[onclick="saveResultCard()"]');
             const origText = btn ? btn.textContent : '';
             if (btn) btn.textContent = 'กำลังบันทึก...';
 
-            // Hide buttons
-            const buttonsDiv = card.querySelector('.space-y-3');
-            if (buttonsDiv) buttonsDiv.style.display = 'none';
+            const enc = res.encouragements[Math.floor(Math.random() * res.encouragements.length)];
 
-            // Remove border radius and overflow-hidden for clean capture
-            card.style.borderRadius = '0';
-            card.style.overflow = 'visible';
+            const exportEl = document.getElementById('storyExportCard');
+            exportEl.innerHTML = `
+                <div style="width:540px;background:#b1c7db;padding:44px 36px 44px;box-sizing:border-box;font-family:'Prompt',sans-serif;display:flex;flex-direction:column;align-items:center;gap:0;">
+                    <p style="color:#432c1c;opacity:0.6;font-size:14px;font-weight:500;letter-spacing:2px;margin:0 0 6px;text-align:center;">เพื่อนที่รู้ใจของคุณคือ...</p>
+                    <h1 style="color:#432c1c;font-size:30px;font-weight:800;margin:0 0 24px;text-align:center;line-height:1.2;">${res.name}</h1>
+                    <div style="width:240px;height:240px;border-radius:20px;overflow:hidden;margin-bottom:28px;flex-shrink:0;">
+                        <img src="${res.charImage}${IMG_V}" style="width:100%;height:100%;object-fit:cover;" crossorigin="anonymous">
+                    </div>
+                    <div style="background:#FBF8F2;border-radius:20px;padding:20px 22px;width:100%;box-sizing:border-box;margin-bottom:18px;border:1px solid rgba(67,44,28,0.15);">
+                        <div style="display:inline-flex;align-items:center;background:#432c1c;color:#fff;font-size:11px;font-weight:700;letter-spacing:1.5px;padding:5px 14px;border-radius:999px;margin-bottom:12px;">💌 ข้อความถึงคุณ</div>
+                        <p style="color:#432c1c;font-size:13px;line-height:1.8;margin:0;">${enc}</p>
+                    </div>
+                    <p style="color:rgba(67,44,28,0.85);font-size:15px;line-height:1.75;margin:0 0 18px;width:100%;text-align:left;">${res.desc}</p>
+                    <div style="background:#FBF8F2;border-radius:20px;padding:18px 22px;width:100%;box-sizing:border-box;border:1px solid rgba(67,44,28,0.15);color:#432c1c;font-size:13px;line-height:1.8;margin-bottom:20px;">${res.motto}</div>
+                    <p style="color:#432c1c;opacity:0.35;font-size:10px;margin:0;letter-spacing:1.5px;">Cony &amp; Co. — conywithfriends</p>
+                </div>
+            `;
 
-            // Fix absolute badge → make it inline-block so it doesn't overflow parent
-            const badge = card.querySelector('.absolute');
-            if (badge) {
-                badge.style.position = 'relative';
-                badge.style.top = '0';
-                badge.style.left = '0';
-                badge.style.display = 'inline-block';
-                badge.style.marginBottom = '10px';
-            }
-
-            const restore = () => {
-                if (buttonsDiv) buttonsDiv.style.display = '';
-                card.style.borderRadius = '';
-                card.style.overflow = '';
-                if (badge) {
-                    badge.style.position = '';
-                    badge.style.top = '';
-                    badge.style.left = '';
-                    badge.style.display = '';
-                    badge.style.marginBottom = '';
-                }
+            const img = exportEl.querySelector('img');
+            const doCapture = () => {
+                const el = exportEl.firstElementChild;
+                html2canvas(el, { scale: 2, useCORS: true, allowTaint: false, backgroundColor: '#b1c7db', width: 540, height: el.offsetHeight }).then(canvas => {
+                    exportEl.innerHTML = '';
+                    const a = document.createElement('a');
+                    a.href = canvas.toDataURL('image/png');
+                    a.download = 'my-cony-result.png';
+                    a.click();
+                    if (btn) btn.textContent = origText;
+                }).catch(() => {
+                    exportEl.innerHTML = '';
+                    if (btn) btn.textContent = origText;
+                });
             };
-
-            html2canvas(card, { scale: 2, useCORS: true, allowTaint: false, backgroundColor: '#b1c7db' }).then(canvas => {
-                restore();
-                const a = document.createElement('a');
-                a.href = canvas.toDataURL('image/png');
-                a.download = 'my-cony-result.png';
-                a.click();
-                if (btn) btn.textContent = origText;
-            }).catch(() => {
-                restore();
-                if (btn) btn.textContent = origText;
-            });
+            if (img) { img.onload = doCapture; img.onerror = doCapture; if (img.complete) doCapture(); }
+            else doCapture();
         }
 
         function saveCharImage(src, name) {
