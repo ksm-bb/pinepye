@@ -237,6 +237,9 @@
         }
 
 
+        // Cache busting version
+        const IMG_V = '?v=20260428';
+
         // Slider Logic
         const SLIDE_COUNT = 12;
         let heroSlideIndex = 0;
@@ -309,7 +312,7 @@
                             <div class="flex-1 relative w-full max-w-lg lg:max-w-none">
                                 <div class="aspect-square bg-[#3a2518] rounded-[3rem] overflow-hidden shadow-2xl relative border-8 border-[#b1c7db] flex items-center">
                                     <div id="heroSlider" class="hero-slider flex w-full h-full">
-                                        ${[1,2,3,4,5,6,7,8,9,10,11,12,1].map(n => `<img src="picset1/${n}cony.webp" class="w-full h-full object-cover flex-shrink-0" alt="cony ${n}">`).join('')}
+                                        ${[1,2,3,4,5,6,7,8,9,10,11,12,1].map(n => `<img src="picset1/${n}cony.webp${IMG_V}" class="w-full h-full object-cover flex-shrink-0" alt="cony ${n}">`).join('')}
                                     </div>
                                 </div>
                             </div>
@@ -325,7 +328,7 @@
                                 ${Object.values(CHARACTERS).map(char => `
                                     <div class="tilt-card bg-[#b1c7db] rounded-[2rem] p-4 md:p-8 text-center shadow-sm hover:shadow-xl border border-transparent hover:border-[#432c1c]/40 group ${STORIES[char.id] ? 'cursor-pointer' : ''}" onclick="openStory('${char.id}')" onmousemove="tiltCard(event,this)" onmouseleave="resetCard(this)" onmousedown="clickCard(this)" onmouseup="resetCard(this)">
                                         <div class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full overflow-hidden mb-3 md:mb-6 group-hover:scale-110 transition-transform">
-                                            <img src="${char.squadImage}" class="w-full h-full object-cover" alt="${char.name}">
+                                            <img src="${char.squadImage}${IMG_V}" class="w-full h-full object-cover" alt="${char.name}">
                                         </div>
                                         <h3 class="font-bold text-sm md:text-lg text-[#432c1c] mb-2">${char.name}</h3>
                                         <p class="text-xs md:text-sm text-[#432c1c]/80 mb-3 md:mb-6 line-clamp-3">${char.cardDesc || char.desc}</p>
@@ -433,7 +436,7 @@
                                     <h1 class="text-3xl md:text-4xl font-extrabold text-[#432c1c] tracking-tight">${res.name}</h1>
                                 </div>
                                 <div class="w-72 h-72 mx-auto rounded-2xl overflow-hidden mb-8">
-                                    <img src="${res.charImage}" alt="${res.name}" class="w-full h-full object-cover">
+                                    <img src="${res.charImage}${IMG_V}" alt="${res.name}" class="w-full h-full object-cover">
                                 </div>
                                 <div class="p-6 rounded-3xl mb-8 text-sm bg-[#FBF8F2] border border-[#432c1c]/20 text-[#432c1c] leading-relaxed">${res.motto}</div>
                                 <p class="text-[#432c1c]/80 mb-8 text-lg leading-relaxed">${res.desc}</p>
