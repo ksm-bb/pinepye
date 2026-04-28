@@ -590,7 +590,7 @@
                                             <img src="${char.squadImage}${IMG_V}" class="w-full h-full object-cover" alt="${char.name}">
                                         </div>
                                         <h3 class="font-bold text-sm md:text-lg text-[#432c1c] mb-2">${char.name}</h3>
-                                        <p class="text-xs md:text-sm text-[#432c1c]/80 mb-3 md:mb-6 line-clamp-3">${char.cardDesc || char.desc}</p>
+                                        <p class="text-xs md:text-sm text-[#432c1c]/80 mb-3 md:mb-6 line-clamp-3">${(char.cardDesc || char.desc).split('<br>')[0]}</p>
                                         <div class="inline-block text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full ${char.theme} bg-opacity-20">${char.tag}</div>
                                     </div>
                                 `).join('')}
