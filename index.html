@@ -435,15 +435,17 @@
                                     <p class="text-[#432c1c]/60 text-lg font-medium tracking-wide mb-1">เพื่อนที่รู้ใจของคุณคือ...</p>
                                     <h1 class="text-3xl md:text-4xl font-extrabold text-[#432c1c] tracking-tight">${res.name}</h1>
                                 </div>
-                                <div class="w-72 h-72 mx-auto rounded-2xl overflow-hidden mb-8">
-                                    <img src="${res.charImage}${IMG_V}" alt="${res.name}" class="w-full h-full object-cover">
+                                <div class="w-72 h-72 mx-auto rounded-2xl overflow-hidden mb-3 relative group">
+                                    <img id="resultCharImg" src="${res.charImage}${IMG_V}" alt="${res.name}" class="w-full h-full object-cover" crossorigin="anonymous">
+                                    <button onclick="saveCharImage('${res.charImage}${IMG_V}','${res.name}')" class="absolute bottom-2 right-2 bg-[#432c1c]/80 hover:bg-[#432c1c] text-white text-xs font-medium px-3 py-1.5 rounded-full transition-all opacity-0 group-hover:opacity-100">บันทึกรูป ↓</button>
                                 </div>
-                                <div class="p-6 rounded-3xl mb-8 text-sm bg-[#FBF8F2] border border-[#432c1c]/20 text-[#432c1c] leading-relaxed">${res.motto}</div>
-                                <p class="text-[#432c1c]/80 mb-8 text-lg leading-relaxed">${res.desc}</p>
+                                <p class="text-center text-[#432c1c]/40 text-xs mb-6">กดค้างที่รูปเพื่อบันทึก หรือ hover แล้วกดปุ่ม</p>
                                 <div class="bg-[#FBF8F2] p-6 rounded-3xl mb-8 text-left border border-[#432c1c]/20 relative mt-10">
                                     <div class="absolute -top-4 left-6 bg-[#432c1c] text-white text-xs font-bold uppercase px-4 py-1.5 rounded-full shadow-md tracking-wider">💌 ข้อความถึงคุณ</div>
                                     <p class="text-[#432c1c] text-sm leading-relaxed font-medium mt-2">${res.encouragements[Math.floor(Math.random() * res.encouragements.length)]}</p>
                                 </div>
+                                <div class="p-6 rounded-3xl mb-8 text-sm bg-[#FBF8F2] border border-[#432c1c]/20 text-[#432c1c] leading-relaxed">${res.motto}</div>
+                                <p class="text-[#432c1c]/80 mb-8 text-lg leading-relaxed">${res.desc}</p>
                                 <button onclick="startQuiz()" class="w-full bg-[#432c1c] text-white hover:bg-[#9db3c7] font-bold py-4 px-6 rounded-2xl transition-all shadow-xl shadow-[#432c1c]/20 text-lg">เล่นอีกครั้ง</button>
                                 <a href="https://shop.line.me/@conyandco/product/1007948651" target="_blank" rel="noopener noreferrer" class="block w-full mt-3 bg-[#fdf6ec] text-[#432c1c] hover:bg-[#f0e8d8] font-medium py-4 px-6 rounded-2xl transition-all shadow-xl shadow-[#432c1c]/10 text-lg text-center">พาน้องกลับบ้าน 🤍 / Take me home! 🐰</a>
                                 <button onclick="setScreen('welcome')" class="w-full mt-3 text-[#432c1c]/60 hover:text-[#432c1c] text-sm transition-colors">กลับไปหน้าแรก</button>
@@ -452,6 +454,26 @@
                     </div>
                 `;
             }
+        }
+
+        function saveCharImage(src, name) {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                canvas.getContext('2d').drawImage(img, 0, 0);
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL('image/webp', 0.9);
+                a.download = name.replace(/\s+/g, '_') + '.webp';
+                a.click();
+            };
+            img.onerror = function() {
+                // fallback: open in new tab for manual save
+                window.open(src, '_blank');
+            };
+            img.src = src;
         }
 
         function openStory(charId) {
