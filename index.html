@@ -459,18 +459,45 @@
         }
 
         function saveResultCard() {
-            const card = document.getElementById('resultCard');
-            if (!card) return;
+            const res = state.result;
+            if (!res) return;
             const btn = document.querySelector('[onclick="saveResultCard()"]');
             const origText = btn ? btn.textContent : '';
             if (btn) btn.textContent = 'กำลังบันทึก...';
-            html2canvas(card, { scale: 2, useCORS: true, allowTaint: false, backgroundColor: null }).then(canvas => {
-                const a = document.createElement('a');
-                a.href = canvas.toDataURL('image/png');
-                a.download = 'my-cony-result.png';
-                a.click();
-                if (btn) btn.textContent = origText;
-            }).catch(() => { if (btn) btn.textContent = origText; });
+
+            const enc = res.encouragements[Math.floor(Math.random() * res.encouragements.length)];
+            const storyCard = document.getElementById('storyExportCard');
+            storyCard.innerHTML = `
+                <div style="width:540px;height:960px;background:#3a2518;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:48px 36px 36px;box-sizing:border-box;">
+                    <p style="color:#b1c7db;opacity:0.7;font-size:14px;font-weight:500;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px;">เพื่อนที่รู้ใจของคุณคือ</p>
+                    <h1 style="color:#b1c7db;font-size:30px;font-weight:800;margin:0 0 24px;text-align:center;">${res.name}</h1>
+                    <div style="width:260px;height:260px;border-radius:24px;overflow:hidden;margin-bottom:28px;border:4px solid #b1c7db;flex-shrink:0;">
+                        <img src="${res.charImage}${IMG_V}" style="width:100%;height:100%;object-fit:cover;" crossorigin="anonymous">
+                    </div>
+                    <div style="background:#FBF8F2;border-radius:20px;padding:20px 24px;margin-bottom:20px;width:100%;box-sizing:border-box;position:relative;">
+                        <div style="position:absolute;top:-14px;left:20px;background:#432c1c;color:white;font-size:10px;font-weight:700;padding:5px 14px;border-radius:999px;letter-spacing:1px;">💌 ข้อความถึงคุณ</div>
+                        <p style="color:#432c1c;font-size:13px;line-height:1.7;margin:10px 0 0;">${enc}</p>
+                    </div>
+                    <div style="background:rgba(177,199,219,0.15);border-radius:20px;padding:16px 24px;width:100%;box-sizing:border-box;border:1px solid rgba(177,199,219,0.3);">
+                        <p style="color:#b1c7db;font-size:12px;line-height:1.7;margin:0;">${res.motto}</p>
+                    </div>
+                    <p style="color:#b1c7db;opacity:0.5;font-size:11px;margin:auto 0 0;letter-spacing:1px;">Cony & Co. — conywithfriends</p>
+                </div>
+            `;
+
+            // Wait for image to load
+            const img = storyCard.querySelector('img');
+            const doCapture = () => {
+                html2canvas(storyCard.firstElementChild, { scale: 2, useCORS: true, allowTaint: false, backgroundColor: '#3a2518', width: 540, height: 960 }).then(canvas => {
+                    const a = document.createElement('a');
+                    a.href = canvas.toDataURL('image/png');
+                    a.download = 'cony-result-story.png';
+                    a.click();
+                    if (btn) btn.textContent = origText;
+                }).catch(() => { if (btn) btn.textContent = origText; });
+            };
+            if (img) { img.onload = doCapture; img.onerror = doCapture; if (img.complete) doCapture(); }
+            else doCapture();
         }
 
         function saveCharImage(src, name) {
@@ -544,6 +571,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Hidden Story Card for saving -->
+    <div id="storyExportCard" style="position:fixed;left:-9999px;top:0;width:540px;height:960px;overflow:hidden;font-family:'Prompt',sans-serif;"></div>
 </body>
 </html>
 
