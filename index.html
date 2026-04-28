@@ -459,55 +459,18 @@
         }
 
         function saveResultCard() {
-            const res = state.result;
-            if (!res) return;
+            const card = document.getElementById('resultCard');
+            if (!card) return;
             const btn = document.querySelector('[onclick="saveResultCard()"]');
             const origText = btn ? btn.textContent : '';
             if (btn) btn.textContent = 'กำลังบันทึก...';
-
-            const enc = res.encouragements[Math.floor(Math.random() * res.encouragements.length)];
-            const encLines = enc.replace(/<br>/g, '\n');
-            const mottoLines = res.motto.replace(/<br>/g,'\n');
-            const storyCard = document.getElementById('storyExportCard');
-
-            storyCard.style.width = '540px';
-            storyCard.style.height = 'auto';
-
-            storyCard.innerHTML = `
-                <div style="width:540px;background:#b1c7db;display:flex;flex-direction:column;align-items:center;padding:44px 32px 40px;box-sizing:border-box;gap:14px;">
-                    <p style="color:#432c1c;opacity:0.55;font-size:12px;font-weight:500;letter-spacing:3px;text-transform:uppercase;margin:0;">เพื่อนที่รู้ใจของคุณคือ</p>
-                    <h1 style="color:#432c1c;font-size:26px;font-weight:800;margin:0;text-align:center;line-height:1.2;">${res.name}</h1>
-                    <div style="width:190px;height:190px;border-radius:20px;overflow:hidden;border:3px solid #432c1c;flex-shrink:0;">
-                        <img src="${res.charImage}${IMG_V}" style="width:100%;height:100%;object-fit:cover;" crossorigin="anonymous">
-                    </div>
-                    <div style="background:#FBF8F2;border-radius:18px;padding:18px 20px;width:100%;box-sizing:border-box;">
-                        <p style="color:#432c1c;font-size:10px;font-weight:700;letter-spacing:1.5px;margin:0 0 8px;text-transform:uppercase;">💌 ข้อความถึงคุณ</p>
-                        <p style="color:#432c1c;font-size:12px;line-height:1.75;margin:0;white-space:pre-line;">${encLines}</p>
-                    </div>
-                    <div style="background:rgba(67,44,28,0.09);border-radius:18px;padding:16px 20px;width:100%;box-sizing:border-box;border:1px solid rgba(67,44,28,0.12);">
-                        <p style="color:#432c1c;font-size:12px;line-height:1.75;margin:0;">${res.cardDesc}</p>
-                    </div>
-                    <div style="background:rgba(67,44,28,0.09);border-radius:18px;padding:16px 20px;width:100%;box-sizing:border-box;border:1px solid rgba(67,44,28,0.12);">
-                        <p style="color:#432c1c;font-size:11px;line-height:1.75;margin:0;font-style:italic;white-space:pre-line;">${mottoLines}</p>
-                    </div>
-                    <p style="color:#432c1c;opacity:0.35;font-size:10px;margin:6px 0 0;letter-spacing:1.5px;">Cony &amp; Co. — conywithfriends</p>
-                </div>
-            `;
-
-            const img = storyCard.querySelector('img');
-            const doCapture = () => {
-                const el = storyCard.firstElementChild;
-                const h = el.offsetHeight;
-                html2canvas(el, { scale: 2, useCORS: true, allowTaint: false, backgroundColor: '#b1c7db', width: 540, height: h }).then(canvas => {
-                    const a = document.createElement('a');
-                    a.href = canvas.toDataURL('image/png');
-                    a.download = 'cony-result-story.png';
-                    a.click();
-                    if (btn) btn.textContent = origText;
-                }).catch(() => { if (btn) btn.textContent = origText; });
-            };
-            if (img) { img.onload = doCapture; img.onerror = doCapture; if (img.complete) doCapture(); }
-            else doCapture();
+            html2canvas(card, { scale: 2, useCORS: true, allowTaint: false, backgroundColor: '#b1c7db' }).then(canvas => {
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL('image/png');
+                a.download = 'my-cony-result.png';
+                a.click();
+                if (btn) btn.textContent = origText;
+            }).catch(() => { if (btn) btn.textContent = origText; });
         }
 
         function saveCharImage(src, name) {
