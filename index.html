@@ -11,7 +11,8 @@
         h1, h2, h3, h4, h5, h6 { font-weight: 500; }
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .hero-slider { transition: transform 1s ease-in-out; }
+        .hero-slider { transition: transform 1s ease-in-out; will-change: transform; }
+        .tilt-card { transition: transform 0.15s ease, box-shadow 0.15s ease; transform-style: preserve-3d; will-change: transform; }
     </style>
 </head>
 <body class="bg-[#b1c7db] text-[#432c1c]">
@@ -24,7 +25,8 @@
             name: "Cony & Co.",
             line: "https://line.me/ti/g2/mKrIfAmBJUZQcE62_s7SkpeYbZaUvwcez8RhEA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default",
             ig: "https://www.instagram.com/conywithfriends/",
-            fb: "https://www.facebook.com/conywithfriends"
+            fb: "https://www.facebook.com/conywithfriends",
+            tiktok: "https://www.tiktok.com/@conywithfriend?_r=1&_t=ZS-95tVyRZaBqW"
         };
 
         const CHARACTERS = {
@@ -171,6 +173,7 @@
             screen: 'welcome', // welcome, quiz, loading, result
             currentQuestion: 0,
             scores: { mimi: 0, mocha: 0, berry: 0, theo: 0, luna: 0, holly: 0, toby: 0, mike: 0 },
+            answers: [],
             result: null,
             heroIndex: 0
         };
@@ -185,10 +188,23 @@
         function startQuiz() {
             state.currentQuestion = 0;
             state.scores = { mimi: 0, mocha: 0, berry: 0, theo: 0, luna: 0, holly: 0, toby: 0, mike: 0 };
+            state.answers = [];
             setScreen('quiz');
         }
 
+        function goBack() {
+            if (state.currentQuestion === 0) return;
+            const prev = state.answers.pop();
+            for (const char in prev) {
+                state.scores[char] -= prev[char];
+            }
+            state.currentQuestion--;
+            render();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         function handleAnswer(choiceScores) {
+            state.answers.push(choiceScores);
             for (const char in choiceScores) {
                 state.scores[char] += choiceScores[char];
             }
@@ -227,11 +243,17 @@
         const charList = Object.values(CHARACTERS);
         setInterval(() => {
             if (state.screen === 'welcome') {
-                heroSlideIndex = (heroSlideIndex + 1) % SLIDE_COUNT;
+                heroSlideIndex++;
                 const slider = document.getElementById('heroSlider');
-                const badge = document.getElementById('heroBadge');
                 if (slider) {
+                    slider.style.transition = 'transform 1s ease-in-out';
                     slider.style.transform = `translateX(-${heroSlideIndex * 100}%)`;
+                    if (heroSlideIndex === SLIDE_COUNT) {
+                        setTimeout(() => {
+                            const s = document.getElementById('heroSlider');
+                            if (s) { s.style.transition = 'none'; s.style.transform = 'translateX(0)'; heroSlideIndex = 0; }
+                        }, 1050);
+                    }
                 }
             }
         }, 3000);
@@ -239,9 +261,18 @@
         let logoSlideIndex = 0;
         setInterval(() => {
             if (state.screen === 'welcome') {
-                logoSlideIndex = (logoSlideIndex + 1) % 3;
+                logoSlideIndex++;
                 const logoSlider = document.getElementById('logoSlider');
-                if (logoSlider) logoSlider.style.transform = `translateX(-${logoSlideIndex * 100}%)`;
+                if (logoSlider) {
+                    logoSlider.style.transition = 'transform 1s ease-in-out';
+                    logoSlider.style.transform = `translateX(-${logoSlideIndex * 100}%)`;
+                    if (logoSlideIndex === 3) {
+                        setTimeout(() => {
+                            const s = document.getElementById('logoSlider');
+                            if (s) { s.style.transition = 'none'; s.style.transform = 'translateX(0)'; logoSlideIndex = 0; }
+                        }, 1050);
+                    }
+                }
             }
         }, 2500);
 
@@ -278,7 +309,7 @@
                             <div class="flex-1 relative w-full max-w-lg lg:max-w-none">
                                 <div class="aspect-square bg-[#3a2518] rounded-[3rem] overflow-hidden shadow-2xl relative border-8 border-[#b1c7db] flex items-center">
                                     <div id="heroSlider" class="hero-slider flex w-full h-full">
-                                        ${[1,2,3,4,5,6,7,8,9,10,11,12].map(n => `<img src="picset1/${n}cony.png" class="w-full h-full object-cover flex-shrink-0" alt="cony ${n}">`).join('')}
+                                        ${[1,2,3,4,5,6,7,8,9,10,11,12,1].map(n => `<img src="picset1/${n}cony.webp" class="w-full h-full object-cover flex-shrink-0" alt="cony ${n}">`).join('')}
                                     </div>
                                 </div>
                             </div>
@@ -288,10 +319,11 @@
                             <div class="max-w-7xl mx-auto text-center mb-16">
                                 <h2 class="text-3xl md:text-4xl font-extrabold text-[#b1c7db] mb-4">CONY CLUB</h2>
                                 <p class="text-[#b1c7db]/80 max-w-2xl mx-auto">ทำความรู้จักแก๊งกระต่ายของเรา แต่ละตัวมีความหมายที่ซ่อนอยู่</p>
+                                <p class="text-[#b1c7db]/60 max-w-2xl mx-auto text-sm mt-2">คลิกที่การ์ดแต่ละใบเพื่ออ่านเรื่องราวของเหล่า CONY</p>
                             </div>
                             <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 ${Object.values(CHARACTERS).map(char => `
-                                    <div class="bg-[#b1c7db] rounded-[2rem] p-4 md:p-8 text-center shadow-sm hover:shadow-xl transition-all border border-transparent hover:border-[#432c1c]/40 group ${STORIES[char.id] ? 'cursor-pointer' : ''}" onclick="openStory('${char.id}')">
+                                    <div class="tilt-card bg-[#b1c7db] rounded-[2rem] p-4 md:p-8 text-center shadow-sm hover:shadow-xl border border-transparent hover:border-[#432c1c]/40 group ${STORIES[char.id] ? 'cursor-pointer' : ''}" onclick="openStory('${char.id}')" onmousemove="tiltCard(event,this)" onmouseleave="resetCard(this)" onmousedown="clickCard(this)" onmouseup="resetCard(this)">
                                         <div class="w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full overflow-hidden mb-3 md:mb-6 group-hover:scale-110 transition-transform">
                                             <img src="${char.squadImage}" class="w-full h-full object-cover" alt="${char.name}">
                                         </div>
@@ -307,7 +339,7 @@
                             <div class="flex-1 w-full relative">
                                 <div class="aspect-square rounded-[2rem] overflow-hidden shadow-xl bg-[#FBF8F2]">
                                     <div id="logoSlider" class="hero-slider flex w-full h-full">
-                                        ${['logo/logo1.webp','logo/logo2.webp','logo/logo3.webp'].map(src => `<img src="${src}" class="w-full h-full object-contain flex-shrink-0 p-3" alt="Cony logo">`).join('')}
+                                        ${['logo/logo1.webp','logo/logo2.webp','logo/logo3.webp','logo/logo1.webp'].map(src => `<img src="${src}" class="w-full h-full object-contain flex-shrink-0 p-3" alt="Cony logo">`).join('')}
                                     </div>
                                 </div>
                             </div>
@@ -346,6 +378,9 @@
                                 <a href="${SHOP_INFO.line}" class="w-10 h-10 rounded-full bg-[#432c1c] flex items-center justify-center text-[#b1c7db] hover:bg-[#5c3d28] transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596a.63.63 0 0 1-.199.031.627.627 0 0 1-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595a.63.63 0 0 1 .194-.033c.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
                                 </a>
+                                <a href="${SHOP_INFO.tiktok}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-[#432c1c] flex items-center justify-center text-[#b1c7db] hover:bg-[#5c3d28] transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.19 8.19 0 0 0 4.79 1.54V6.78a4.85 4.85 0 0 1-1.02-.09z"/></svg>
+                                </a>
                             </div>
                             <div class="text-[#432c1c]/70 font-bold text-sm tracking-widest">${SHOP_INFO.name.toUpperCase()}</div>
                         </footer>
@@ -374,6 +409,7 @@
                                 `).join('')}
                             </div>
                         </div>
+                        ${state.currentQuestion > 0 ? `<button onclick="goBack()" class="mt-4 text-[#432c1c]/50 hover:text-[#432c1c]/80 text-sm transition-colors">&larr; ย้อนกลับข้อก่อนหน้า</button>` : ''}
                     </div>
                 `;
             } else if (state.screen === 'loading') {
@@ -406,6 +442,7 @@
                                     <p class="text-[#432c1c] text-sm leading-relaxed font-medium mt-2">${res.encouragements[Math.floor(Math.random() * res.encouragements.length)]}</p>
                                 </div>
                                 <button onclick="startQuiz()" class="w-full bg-[#432c1c] text-white hover:bg-[#9db3c7] font-bold py-4 px-6 rounded-2xl transition-all shadow-xl shadow-[#432c1c]/20 text-lg">เล่นอีกครั้ง</button>
+                                <a href="https://shop.line.me/@conyandco/product/1007948651" target="_blank" rel="noopener noreferrer" class="block w-full mt-3 bg-[#fdf6ec] text-[#432c1c] hover:bg-[#f0e8d8] font-medium py-4 px-6 rounded-2xl transition-all shadow-xl shadow-[#432c1c]/10 text-lg text-center">พาน้องกลับบ้าน 🤍 / Take me home! 🐰</a>
                                 <button onclick="setScreen('welcome')" class="w-full mt-3 text-[#432c1c]/60 hover:text-[#432c1c] text-sm transition-colors">กลับไปหน้าแรก</button>
                             </div>
                         </div>
@@ -435,12 +472,34 @@
 
         // เริ่มต้นแอป
         render();
+
+        function tiltCard(e, el) {
+            const rect = el.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+            const rotateX = ((y - cy) / cy) * -8;
+            const rotateY = ((x - cx) / cx) * 8;
+            el.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.04)`;
+        }
+
+        function resetCard(el) {
+            el.style.transform = 'perspective(600px) rotateX(0deg) rotateY(0deg) scale(1)';
+        }
+
+        function clickCard(el) {
+            el.style.transform = 'perspective(600px) rotateX(0deg) rotateY(0deg) scale(0.97)';
+        }
     </script>
 
     <div id="storyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" onclick="closeStory()" style="background:rgba(58,37,24,0.7)">
         <div class="bg-[#FBF8F2] rounded-[2rem] max-w-lg w-full max-h-[85vh] overflow-y-auto p-8 relative shadow-2xl fade-in" onclick="event.stopPropagation()">
             <button onclick="closeStory()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#432c1c] text-white flex items-center justify-center text-xl font-bold hover:bg-[#5c3d28] leading-none">&times;</button>
             <div id="storyContent" class="pr-1"></div>
+            <div class="text-center mt-6">
+                <button onclick="closeStory()" class="text-[#432c1c]/50 hover:text-[#432c1c]/80 text-sm transition-colors">ปิดหน้าต่าง</button>
+            </div>
         </div>
     </div>
 </body>
