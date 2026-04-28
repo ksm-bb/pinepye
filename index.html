@@ -464,17 +464,47 @@
             const btn = document.querySelector('[onclick="saveResultCard()"]');
             const origText = btn ? btn.textContent : '';
             if (btn) btn.textContent = 'กำลังบันทึก...';
+
+            // Hide buttons
             const buttonsDiv = card.querySelector('.space-y-3');
             if (buttonsDiv) buttonsDiv.style.display = 'none';
-            html2canvas(card, { scale: 2, useCORS: true, allowTaint: false, backgroundColor: '#b1c7db' }).then(canvas => {
+
+            // Remove border radius and overflow-hidden for clean capture
+            card.style.borderRadius = '0';
+            card.style.overflow = 'visible';
+
+            // Fix absolute badge → make it inline-block so it doesn't overflow parent
+            const badge = card.querySelector('.absolute');
+            if (badge) {
+                badge.style.position = 'relative';
+                badge.style.top = '0';
+                badge.style.left = '0';
+                badge.style.display = 'inline-block';
+                badge.style.marginBottom = '10px';
+            }
+
+            const restore = () => {
                 if (buttonsDiv) buttonsDiv.style.display = '';
+                card.style.borderRadius = '';
+                card.style.overflow = '';
+                if (badge) {
+                    badge.style.position = '';
+                    badge.style.top = '';
+                    badge.style.left = '';
+                    badge.style.display = '';
+                    badge.style.marginBottom = '';
+                }
+            };
+
+            html2canvas(card, { scale: 2, useCORS: true, allowTaint: false, backgroundColor: '#b1c7db' }).then(canvas => {
+                restore();
                 const a = document.createElement('a');
                 a.href = canvas.toDataURL('image/png');
                 a.download = 'my-cony-result.png';
                 a.click();
                 if (btn) btn.textContent = origText;
             }).catch(() => {
-                if (buttonsDiv) buttonsDiv.style.display = '';
+                restore();
                 if (btn) btn.textContent = origText;
             });
         }
