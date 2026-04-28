@@ -662,7 +662,7 @@
                             <div class="bg-[#432c1c] h-2 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
                         </div>
                         <div class="bg-[#5c3d28] rounded-[2rem] shadow-xl p-6 md:p-8 max-w-2xl w-full border border-[#432c1c]/10">
-                            <h2 class="text-2xl font-bold mb-8 text-center text-[#b1c7db] leading-tight">${question.question.replace(/\n/g,'<br>')}</h2>
+                            <h2 class="text-2xl font-medium mb-8 text-center text-[#b1c7db] leading-tight">${question.question.replace(/\n/g,'<br>')}</h2>
                             <div class="flex flex-col gap-4">
                                 ${question.choices.map((choice, i) => `
                                     <button onclick='handleAnswer(${JSON.stringify(choice.scores)})' class="text-left w-full p-5 rounded-2xl border border-[#b1c7db]/30 bg-[#b1c7db]/15 hover:bg-[#b1c7db]/30 hover:border-[#b1c7db]/70 transition-all text-[#b1c7db] tracking-wide">
