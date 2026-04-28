@@ -468,27 +468,30 @@
             const enc = res.encouragements[Math.floor(Math.random() * res.encouragements.length)];
             const storyCard = document.getElementById('storyExportCard');
             storyCard.innerHTML = `
-                <div style="width:540px;height:960px;background:#3a2518;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:48px 36px 36px;box-sizing:border-box;">
-                    <p style="color:#b1c7db;opacity:0.7;font-size:14px;font-weight:500;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px;">เพื่อนที่รู้ใจของคุณคือ</p>
-                    <h1 style="color:#b1c7db;font-size:30px;font-weight:800;margin:0 0 24px;text-align:center;">${res.name}</h1>
-                    <div style="width:260px;height:260px;border-radius:24px;overflow:hidden;margin-bottom:28px;border:4px solid #b1c7db;flex-shrink:0;">
+                <div style="width:540px;height:960px;background:#b1c7db;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:48px 36px 36px;box-sizing:border-box;">
+                    <p style="color:#432c1c;opacity:0.6;font-size:14px;font-weight:500;letter-spacing:2px;text-transform:uppercase;margin:0 0 6px;">เพื่อนที่รู้ใจของคุณคือ</p>
+                    <h1 style="color:#432c1c;font-size:28px;font-weight:800;margin:0 0 20px;text-align:center;">${res.name}</h1>
+                    <div style="width:220px;height:220px;border-radius:24px;overflow:hidden;margin-bottom:20px;border:4px solid #432c1c;flex-shrink:0;">
                         <img src="${res.charImage}${IMG_V}" style="width:100%;height:100%;object-fit:cover;" crossorigin="anonymous">
                     </div>
-                    <div style="background:#FBF8F2;border-radius:20px;padding:20px 24px;margin-bottom:20px;width:100%;box-sizing:border-box;position:relative;">
+                    <div style="background:#FBF8F2;border-radius:20px;padding:20px 24px;margin-bottom:16px;width:100%;box-sizing:border-box;position:relative;">
                         <div style="position:absolute;top:-14px;left:20px;background:#432c1c;color:white;font-size:10px;font-weight:700;padding:5px 14px;border-radius:999px;letter-spacing:1px;">💌 ข้อความถึงคุณ</div>
-                        <p style="color:#432c1c;font-size:13px;line-height:1.7;margin:10px 0 0;">${enc}</p>
+                        <p style="color:#432c1c;font-size:12px;line-height:1.8;margin:10px 0 0;">${enc}</p>
                     </div>
-                    <div style="background:rgba(177,199,219,0.15);border-radius:20px;padding:16px 24px;width:100%;box-sizing:border-box;border:1px solid rgba(177,199,219,0.3);">
-                        <p style="color:#b1c7db;font-size:12px;line-height:1.7;margin:0;">${res.motto}</p>
+                    <div style="background:rgba(67,44,28,0.08);border-radius:20px;padding:16px 24px;margin-bottom:16px;width:100%;box-sizing:border-box;border:1px solid rgba(67,44,28,0.15);">
+                        <p style="color:#432c1c;font-size:12px;line-height:1.8;margin:0;">${res.cardDesc}</p>
                     </div>
-                    <p style="color:#b1c7db;opacity:0.5;font-size:11px;margin:auto 0 0;letter-spacing:1px;">Cony & Co. — conywithfriends</p>
+                    <div style="background:rgba(67,44,28,0.08);border-radius:20px;padding:16px 24px;width:100%;box-sizing:border-box;border:1px solid rgba(67,44,28,0.15);">
+                        <p style="color:#432c1c;font-size:11px;line-height:1.8;margin:0;font-style:italic;">${res.motto}</p>
+                    </div>
+                    <p style="color:#432c1c;opacity:0.4;font-size:11px;margin:auto 0 0;letter-spacing:1px;">Cony & Co. — conywithfriends</p>
                 </div>
             `;
 
             // Wait for image to load
             const img = storyCard.querySelector('img');
             const doCapture = () => {
-                html2canvas(storyCard.firstElementChild, { scale: 2, useCORS: true, allowTaint: false, backgroundColor: '#3a2518', width: 540, height: 960 }).then(canvas => {
+                html2canvas(storyCard.firstElementChild, { scale: 2, useCORS: true, allowTaint: false, backgroundColor: '#b1c7db', width: 540, height: 960 }).then(canvas => {
                     const a = document.createElement('a');
                     a.href = canvas.toDataURL('image/png');
                     a.download = 'cony-result-story.png';
