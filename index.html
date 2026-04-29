@@ -761,25 +761,31 @@
                         }
 
                         const imageFile = new File([blob], fileName, { type: 'image/png' });
-                        const shareSupported = navigator.share && navigator.canShare && navigator.canShare({ files: [imageFile] });
+                        let shared = false;
 
-                        if (shareSupported) {
+                        if (navigator.share) {
                             try {
-                                await navigator.share({
-                                    files: [imageFile],
-                                    title: 'My Cony Result',
-                                    text: 'ผลลัพธ์เพื่อนที่รู้ใจของฉันจาก Cony & Co.'
-                                });
-                            } catch (err) {
-                                if (err && err.name !== 'AbortError') {
-                                    const a = document.createElement('a');
-                                    a.href = URL.createObjectURL(blob);
-                                    a.download = fileName;
-                                    a.click();
-                                    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+                                const canShareFiles = !navigator.canShare || navigator.canShare({ files: [imageFile] });
+                                if (canShareFiles) {
+                                    await navigator.share({
+                                        files: [imageFile],
+                                        title: 'My Cony Result',
+                                        text: 'ผลลัพธ์เพื่อนที่รู้ใจของฉันจาก Cony & Co.'
+                                    });
+                                } else {
+                                    await navigator.share({
+                                        title: 'My Cony Result',
+                                        text: 'ผลลัพธ์เพื่อนที่รู้ใจของฉันจาก Cony & Co.',
+                                        url: window.location.href
+                                    });
                                 }
+                                shared = true;
+                            } catch (err) {
+                                if (err && err.name === 'AbortError') shared = true;
                             }
-                        } else {
+                        }
+
+                        if (!shared) {
                             const a = document.createElement('a');
                             a.href = URL.createObjectURL(blob);
                             a.download = fileName;
